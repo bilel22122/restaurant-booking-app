@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, UtensilsCrossed } from "lucide-react";
+import { LayoutDashboard, UtensilsCrossed, MessageSquare } from "lucide-react";
 
 export default function AdminLayout({
     children,
@@ -22,6 +22,11 @@ export default function AdminLayout({
             name: "Menu Manager",
             href: "/admin/menu",
             icon: UtensilsCrossed
+        },
+        {
+            name: "Reviews",
+            href: "/admin/reviews",
+            icon: MessageSquare
         }
     ];
 

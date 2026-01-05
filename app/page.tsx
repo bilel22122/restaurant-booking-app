@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLanguage } from "@/components/LanguageProvider";
 import BookingFlow from "@/components/BookingFlow";
+import FeedbackSection from "@/components/FeedbackSection";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { restaurantConfig } from "@/restaurant.config";
 import { UtensilsCrossed, ArrowRight } from "lucide-react";
@@ -88,6 +89,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Feedback Section */}
+      <FeedbackSection />
 
       <footer className="bg-gray-900 text-gray-400 py-8 text-center text-sm">
         <p>&copy; {new Date().getFullYear()} {restaurantConfig.name}. All rights reserved.</p>

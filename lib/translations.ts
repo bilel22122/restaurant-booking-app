@@ -43,6 +43,17 @@ export const translations = {
         btn_directions: "Get Directions",
         btn_menu: "Browse Menu",
         helper_faster: "This helps us prepare your table faster.",
+
+        // Feedback
+        feedback_title: "How was your meal?",
+        feedback_high_rating: "Thank you! Please support us by leaving a review on Google.",
+        feedback_low_rating: "We are sorry. Please tell us what went wrong.",
+        feedback_google_btn: "Open Google Maps",
+        feedback_submit_btn: "Submit Feedback",
+        feedback_thank_you_manager: "Thank you. The manager will read this personally.",
+        feedback_placeholder: "Tell us about your experience...",
+        feedback_name_label: "Your Name (Optional)",
+        feedback_name_placeholder: "John Doe",
     },
     fr: {
         // Steps
@@ -86,6 +97,17 @@ export const translations = {
         btn_directions: "Itinéraire",
         btn_menu: "Voir le menu",
         helper_faster: "Cela nous aide à préparer votre table plus rapidement.",
+
+        // Feedback
+        feedback_title: "Comment s'est passé votre repas ?",
+        feedback_high_rating: "Merci ! Soutenez-nous en laissant un avis sur Google.",
+        feedback_low_rating: "Nous sommes désolés. Dites-nous ce qui n'a pas été.",
+        feedback_google_btn: "Ouvrir Google Maps",
+        feedback_submit_btn: "Envoyer",
+        feedback_thank_you_manager: "Merci. Le gérant lira ceci personnellement.",
+        feedback_placeholder: "Racontez-nous votre expérience...",
+        feedback_name_label: "Votre Nom (Optionel)",
+        feedback_name_placeholder: "Jean Dupont",
     },
     ar: {
         // Steps
@@ -129,6 +151,17 @@ export const translations = {
         btn_directions: "الاتجاهات",
         btn_menu: "تصفح القائمة",
         helper_faster: "هذا يساعدنا في تجهيز طاولتك بشكل أسرع.",
+
+        // Feedback
+        feedback_title: "كيف كانت وجبتك؟",
+        feedback_high_rating: "شكراً لك! يرجى دعمنا بترك تعليق على جوجل.",
+        feedback_low_rating: "نحن آسفون. أخبرنا ما الخطأ الذي حدث.",
+        feedback_google_btn: "فتح خرائط جوجل",
+        feedback_submit_btn: "إرسال الملاحظات",
+        feedback_thank_you_manager: "شكراً لك. سيقرأ المدير هذا شخصياً.",
+        feedback_placeholder: "أخبرنا عن تجربتك...",
+        feedback_name_label: "اسمك (اختياري)",
+        feedback_name_placeholder: "أحمد محمد",
     }
 };
 
