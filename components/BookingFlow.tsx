@@ -6,7 +6,9 @@ import { format } from "date-fns";
 import { Calendar, Clock, User, Phone, Users, CheckCircle, Loader2, MapPin, UtensilsCrossed, CalendarPlus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { restaurantConfig } from "@/restaurant.config";
+
 import { cn } from "@/lib/utils";
+import { useLanguage } from "./LanguageProvider";
 
 type BookingStatus = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -21,6 +23,8 @@ export default function BookingFlow() {
     const [bookingStatus, setBookingStatus] = useState<BookingStatus>('idle');
     const [availableSlots, setAvailableSlots] = useState<string[]>([]);
     const [loadingSlots, setLoadingSlots] = useState(false);
+    const [showAllTimes, setShowAllTimes] = useState(false);
+    const { t } = useLanguage();
 
     // Fetch slots based on date (Mock logic for now, or real if DB connected)
     useEffect(() => {
@@ -31,7 +35,15 @@ export default function BookingFlow() {
                 // Real implementation would query 'bookings' and 'availability'
                 // For now, generate some static slots for the demo
                 await new Promise(resolve => setTimeout(resolve, 800)); // Fake delay
-                setAvailableSlots(["12:00", "12:30", "13:00", "13:30", "14:00", "18:00", "18:30", "19:00", "19:30", "20:00"]);
+                const slots: string[] = [];
+                const startHour = 10;
+                const endHour = 24; // Midnight
+                for (let i = startHour; i < endHour; i++) {
+                    slots.push(`${i.toString().padStart(2, '0')}:00`);
+                    slots.push(`${i.toString().padStart(2, '0')}:30`);
+                }
+                slots.push("00:00");
+                setAvailableSlots(slots);
             } catch (e) {
                 console.error("Error fetching slots", e);
             } finally {
@@ -111,7 +123,7 @@ export default function BookingFlow() {
                             {i}
                         </div>
                         <span className="text-xs mt-2 text-gray-500">
-                            {i === 1 ? 'Time' : i === 2 ? 'Details' : 'Done'}
+                            {i === 1 ? t('step_time') : i === 2 ? t('step_details') : t('step_done')}
                         </span>
                     </div>
                 ))}
@@ -120,10 +132,10 @@ export default function BookingFlow() {
             {/* Step 1: Date & Time */}
             {step === 1 && (
                 <div className="space-y-6">
-                    <h2 className="text-xl font-semibold text-[var(--foreground)]">Select Date & Time</h2>
+                    <h2 className="text-xl font-semibold text-[var(--foreground)]">{t('select_date_time')}</h2>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('label_date')}</label>
                         <div className="relative">
                             <input
                                 type="date"
@@ -137,12 +149,12 @@ export default function BookingFlow() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Available Slots</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('label_slots')}</label>
                         {loadingSlots ? (
                             <div className="flex justify-center p-4"><Loader2 className="animate-spin text-[var(--primary)]" /></div>
                         ) : (
                             <div className="grid grid-cols-3 gap-2">
-                                {availableSlots.map(slot => (
+                                {(showAllTimes ? availableSlots : availableSlots.slice(0, 9)).map(slot => (
                                     <button
                                         key={slot}
                                         onClick={() => setTime(slot)}
@@ -158,16 +170,24 @@ export default function BookingFlow() {
                                 ))}
                             </div>
                         )}
+                        {!loadingSlots && availableSlots.length > 9 && (
+                            <button
+                                onClick={() => setShowAllTimes(!showAllTimes)}
+                                className="mt-4 w-full text-sm text-[var(--primary)] hover:text-[var(--primary)]/80 font-medium flex items-center justify-center gap-1"
+                            >
+                                {showAllTimes ? t('show_less') : t('show_all_times')}
+                            </button>
+                        )}
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Guests</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('label_guests')}</label>
                         <div className="flex items-center gap-4">
                             <Users className="text-gray-400 w-5 h-5" />
                             <input
                                 type="range"
                                 min="1"
-                                max="10"
+                                max="20"
                                 value={people}
                                 onChange={(e) => setPeople(parseInt(e.target.value))}
                                 className="w-full accent-[var(--primary)]"
@@ -181,7 +201,7 @@ export default function BookingFlow() {
                         disabled={!time}
                         className="w-full py-3 bg-[var(--primary)] text-white font-semibold rounded-[var(--radius)] disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
                     >
-                        Continue
+                        {t('btn_continue')}
                     </button>
                 </div>
             )}
@@ -189,31 +209,31 @@ export default function BookingFlow() {
             {/* Step 2: Details */}
             {step === 2 && (
                 <div className="space-y-6">
-                    <h2 className="text-xl font-semibold text-[var(--foreground)]">Your Details</h2>
+                    <h2 className="text-xl font-semibold text-[var(--foreground)]">{t('your_details')}</h2>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('label_name')}</label>
                         <div className="relative">
                             <User className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
                             <input
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                placeholder="John Doe"
+                                placeholder={t('placeholder_name')}
                                 className="w-full pl-10 p-3 border rounded-[var(--radius)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-none"
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('label_phone')}</label>
                         <div className="relative">
                             <Phone className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
                             <input
                                 type="tel"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                placeholder="+1 234 567 8900"
+                                placeholder={t('placeholder_phone')}
                                 className="w-full pl-10 p-3 border rounded-[var(--radius)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-none"
                             />
                         </div>
@@ -221,11 +241,11 @@ export default function BookingFlow() {
 
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Special Requests (Optional)</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('label_notes')}</label>
                         <textarea
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
-                            placeholder="Allergies, high chair needed, etc."
+                            placeholder={t('placeholder_notes')}
                             className="w-full p-3 border rounded-[var(--radius)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-none min-h-[100px]"
                         />
                     </div>
@@ -235,7 +255,7 @@ export default function BookingFlow() {
                             onClick={handleBack}
                             className="flex-1 py-3 border border-gray-300 text-gray-700 font-semibold rounded-[var(--radius)] hover:bg-gray-50 transition-colors"
                         >
-                            Back
+                            {t('btn_back')}
                         </button>
                         <button
                             onClick={handleSubmit}
@@ -243,7 +263,7 @@ export default function BookingFlow() {
                             className="flex-1 py-3 bg-[var(--primary)] text-white font-semibold rounded-[var(--radius)] disabled:opacity-50 hover:opacity-90 transition-opacity flex justify-center items-center gap-2"
                         >
                             {bookingStatus === 'submitting' && <Loader2 className="animate-spin w-4 h-4" />}
-                            Confirm Booking
+                            {t('btn_confirm')}
                         </button>
                     </div>
                 </div>
@@ -258,21 +278,21 @@ export default function BookingFlow() {
                             <CheckCircle className="w-8 h-8 text-green-600" />
                         </div>
                         <div className="space-y-2">
-                            <h2 className="text-2xl font-bold text-[var(--foreground)]">Booking Confirmed!</h2>
-                            <p className="text-gray-600">We eagerly await your visit, {name.split(' ')[0]}.</p>
+                            <h2 className="text-2xl font-bold text-[var(--foreground)]">{t('booking_confirmed')}</h2>
+                            <p className="text-gray-600">{t('booking_await')} {name.split(' ')[0]}.</p>
                         </div>
 
                         <div className="bg-gray-50 p-4 rounded-[var(--radius)] text-left text-sm space-y-2">
                             <div className="flex justify-between">
-                                <span className="text-gray-500">Date:</span>
+                                <span className="text-gray-500">{t('label_confirmed_date')}</span>
                                 <span className="font-medium">{format(new Date(date), 'MMMM do, yyyy')}</span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-gray-500">Time:</span>
+                                <span className="text-gray-500">{t('label_confirmed_time')}</span>
                                 <span className="font-medium">{time}</span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-gray-500">Guests:</span>
+                                <span className="text-gray-500">{t('label_confirmed_guests')}</span>
                                 <span className="font-medium">{people} People</span>
                             </div>
                         </div>
@@ -284,7 +304,7 @@ export default function BookingFlow() {
                             rel="noreferrer"
                             className="block w-full py-4 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold rounded-[var(--radius)] transition-colors shadow-lg flex justify-center items-center gap-2"
                         >
-                            <Phone size={20} className="fill-current" /> Send Confirmation to WhatsApp
+                            <Phone size={20} className="fill-current" /> {t('btn_whatsapp')}
                         </a>
 
                         <div className="grid grid-cols-2 gap-3 pt-2">
@@ -294,7 +314,7 @@ export default function BookingFlow() {
                                 rel="noreferrer"
                                 className="flex items-center justify-center gap-2 p-3 text-sm font-medium text-[var(--primary)] bg-[var(--primary)]/10 hover:bg-[var(--primary)]/20 rounded-[var(--radius)] transition-colors"
                             >
-                                <CalendarPlus size={16} /> Add to Calendar
+                                <CalendarPlus size={16} /> {t('btn_calendar')}
                             </a>
                             <a
                                 href={getGoogleMapsLink()}
@@ -302,7 +322,7 @@ export default function BookingFlow() {
                                 rel="noreferrer"
                                 className="flex items-center justify-center gap-2 p-3 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-[var(--radius)] transition-colors"
                             >
-                                <MapPin size={16} /> Get Directions
+                                <MapPin size={16} /> {t('btn_directions')}
                             </a>
                         </div>
 
@@ -311,11 +331,11 @@ export default function BookingFlow() {
                                 href="/"
                                 className="block w-full p-3 text-sm font-medium text-center text-[var(--primary)] border border-[var(--primary)] rounded-[var(--radius)] hover:bg-[var(--primary)] hover:text-white transition-colors"
                             >
-                                Browse Menu
+                                {t('btn_menu')}
                             </a>
                         )}
 
-                        <p className="text-xs text-gray-400">This helps us prepare your table faster.</p>
+                        <p className="text-xs text-gray-400">{t('helper_faster')}</p>
                     </div>
                 )
             }

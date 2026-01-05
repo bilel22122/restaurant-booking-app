@@ -1,10 +1,15 @@
+"use client";
 
 import Link from "next/link";
+import { useLanguage } from "@/components/LanguageProvider";
 import BookingFlow from "@/components/BookingFlow";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { restaurantConfig } from "@/restaurant.config";
 import { UtensilsCrossed, ArrowRight } from "lucide-react";
 
 export default function Home() {
+  const { t } = useLanguage();
+
   return (
     <main className="min-h-screen flex flex-col">
       {/* Hero Section */}
@@ -15,6 +20,10 @@ export default function Home() {
           className="absolute inset-0 z-0 bg-cover bg-center opacity-60 scale-105"
           style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80")' }}
         />
+
+        <div className="absolute top-4 right-4 z-50">
+          <LanguageSwitcher />
+        </div>
 
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto space-y-6">
           <div className="flex justify-center mb-4">
@@ -34,16 +43,16 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-20 bg-white text-center">
         <div className="max-w-4xl mx-auto px-4 space-y-8">
-          <h2 className="text-4xl font-bold text-[var(--foreground)]">Discover Our Flavors</h2>
+          <h2 className="text-4xl font-bold text-[var(--foreground)]">{t('hero_title')}</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Indulge in a culinary journey featuring the finest ingredients and authentic recipes.
+            {t('hero_subtitle')}
           </p>
           <Link
             href="/menu"
             className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--primary)] text-white text-lg font-semibold rounded-[var(--radius)] hover:opacity-90 transition-all hover:-translate-y-1 shadow-lg"
           >
             <UtensilsCrossed size={20} />
-            Explore Our Full Menu
+            {t('hero_cta')}
             <ArrowRight size={20} />
           </Link>
         </div>
