@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useLanguage } from './LanguageProvider';
@@ -13,16 +14,16 @@ export default function LanguageSwitcher() {
     ] as const;
 
     return (
-        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md p-1 rounded-full border border-white/20">
+        <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-full border border-gray-200">
             {languages.map((lang) => (
                 <button
                     key={lang.code}
                     onClick={() => setLanguage(lang.code)}
                     className={cn(
-                        "px-3 py-1 rounded-full text-sm font-medium transition-all duration-200",
+                        "px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200",
                         language === lang.code
-                            ? "bg-white text-black shadow-sm"
-                            : "text-white/80 hover:bg-white/10 hover:text-white"
+                            ? "bg-white text-orange-600 font-bold shadow-sm ring-1 ring-black/5"
+                            : "text-gray-600 hover:text-gray-900 hover:bg-gray-200/50"
                     )}
                 >
                     {lang.label}

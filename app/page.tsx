@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useLanguage } from "@/components/LanguageProvider";
 import BookingFlow from "@/components/BookingFlow";
 import FeedbackSection from "@/components/FeedbackSection";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+
 import { restaurantConfig } from "@/restaurant.config";
 import { UtensilsCrossed, ArrowRight } from "lucide-react";
 
@@ -22,9 +22,7 @@ export default function Home() {
           style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80")' }}
         />
 
-        <div className="absolute top-4 right-4 z-50">
-          <LanguageSwitcher />
-        </div>
+
 
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto space-y-6">
           <div className="flex justify-center mb-4">
