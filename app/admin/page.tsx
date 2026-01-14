@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { format } from "date-fns";
 import { Check, X, Clock, Loader2, Calendar, Users, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
+import TimeClock from "@/components/admin/TimeClock";
 
 // Define Booking type manually to match DB
 type Booking = {
@@ -123,6 +124,9 @@ export default function AdminDashboard() {
                         </div>
                     </div>
                 </header>
+
+                {/* Time Clock */}
+                <TimeClock />
 
                 {/* Filters */}
                 <div className="flex items-center gap-2 bg-white p-2 rounded-[var(--radius)] shadow-sm w-fit">

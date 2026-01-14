@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Star, AlertCircle, Quote, User } from "lucide-react";
+import { Star, AlertCircle, Quote, User, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface Review {
     id: string;
@@ -17,22 +18,48 @@ interface Review {
 export default function AdminReviewsPage() {
     const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState(true);
+    const [roleLoading, setRoleLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
-        async function fetchReviews() {
-            const { data, error } = await supabase
-                .from('reviews')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (!error && data) {
-                setReviews(data);
+        async function checkAccess() {
+            setRoleLoading(true);
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const { data } = await supabase.from('user_roles').select('role').eq('user_id', user.id).single();
+                if (data?.role !== 'owner') {
+                    router.push('/admin');
+                } else {
+                    setRoleLoading(false);
+                    fetchReviews();
+                }
+            } else {
+                router.push('/login');
             }
-            setLoading(false);
         }
+        checkAccess();
+    }, [router]);
 
-        fetchReviews();
-    }, []);
+    async function fetchReviews() {
+        setLoading(true);
+        const { data, error } = await supabase
+            .from('reviews')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (!error && data) {
+            setReviews(data);
+        }
+        setLoading(false);
+    }
+
+    if (roleLoading) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <Loader2 className="animate-spin text-gray-400" />
+            </div>
+        );
+    }
 
     if (loading) return <div className="p-8">Loading reviews...</div>;
 

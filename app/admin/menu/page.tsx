@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Loader2, Plus, Trash2, Image as ImageIcon, Edit, X, UploadCloud } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type MenuItem = {
     id: string;
@@ -19,6 +20,8 @@ export default function MenuManager() {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [roleLoading, setRoleLoading] = useState(true);
+    const router = useRouter();
 
     // Editing State
     const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
@@ -29,6 +32,25 @@ export default function MenuManager() {
     const [price, setPrice] = useState("");
     const [category, setCategory] = useState("Main");
     const [imageUrl, setImageUrl] = useState("");
+
+    useEffect(() => {
+        async function checkAccess() {
+            setRoleLoading(true);
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const { data } = await supabase.from('user_roles').select('role').eq('user_id', user.id).single();
+                if (data?.role !== 'owner') {
+                    router.push('/admin');
+                } else {
+                    setRoleLoading(false);
+                    fetchMenu();
+                }
+            } else {
+                router.push('/login');
+            }
+        }
+        checkAccess();
+    }, [router]);
 
     const fetchMenu = async () => {
         setLoading(true);
@@ -44,10 +66,6 @@ export default function MenuManager() {
         }
         setLoading(false);
     };
-
-    useEffect(() => {
-        fetchMenu();
-    }, []);
 
     const resetForm = () => {
         setEditingItem(null);
@@ -147,6 +165,14 @@ export default function MenuManager() {
             setMenuItems(prev => prev.filter(i => i.id !== id));
         }
     };
+
+    if (roleLoading) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <Loader2 className="animate-spin text-gray-400" />
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-8">
