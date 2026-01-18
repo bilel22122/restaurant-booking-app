@@ -8,9 +8,12 @@ export async function createStaffAccount(prevState: any, formData: FormData) {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     const name = formData.get('name') as string;
+    const phone = formData.get('phone') as string;
+    const rateStr = formData.get('hourly_rate') as string;
+    const hourly_rate = rateStr ? parseFloat(rateStr) : 0;
 
     if (!email || !password || !name) {
-        return { message: 'Please provide all fields.', error: true };
+        return { message: 'Please provide all required fields (Name, Email, Password).', error: true };
     }
 
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -36,7 +39,7 @@ export async function createStaffAccount(prevState: any, formData: FormData) {
             email,
             password,
             email_confirm: true,
-            user_metadata: { name }
+            user_metadata: { name } // Still keeping name in metadata as backup
         });
 
         if (authError) {
@@ -48,18 +51,18 @@ export async function createStaffAccount(prevState: any, formData: FormData) {
             return { message: 'Failed to create user.', error: true };
         }
 
-        // 2. Assign Role 'staff'
-        // Using upsert or insert. Since unique constraint is on user_id, insert is fine.
+        // 2. Assign Role 'staff' AND Personal Details
         const { error: roleError } = await supabaseAdmin
             .from('user_roles')
             .insert({
                 user_id: authData.user.id,
-                role: 'staff'
+                role: 'staff',
+                full_name: name,
+                phone_number: phone || null,
+                hourly_rate: hourly_rate
             });
 
         if (roleError) {
-            // Rollback user creation if role assignment fails? 
-            // Ideally yes, but for now let's just log it. The user exists but has no role.
             console.error("Role assignment error:", roleError);
             // Attempt to clean up
             await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
@@ -67,6 +70,7 @@ export async function createStaffAccount(prevState: any, formData: FormData) {
         }
 
         revalidatePath('/admin/staff');
+        revalidatePath('/admin/timesheets');
         return { message: `Staff member ${name} created successfully!`, error: false };
 
     } catch (e: any) {

@@ -16,17 +16,28 @@ export default function CreateStaffForm() {
 
             <form action={action} className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
                     <input name="name" type="text" required className="w-full p-2 border rounded-md" placeholder="e.g. John Doe" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number (Optional)</label>
+                        <input name="phone" type="tel" className="w-full p-2 border rounded-md" placeholder="+1 234 567 890" />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Hourly Rate ($)</label>
+                        <input name="hourly_rate" type="number" step="0.50" min="0" className="w-full p-2 border rounded-md" placeholder="0.00" />
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                         <input name="email" type="email" required className="w-full p-2 border rounded-md" placeholder="john@example.com" />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Password *</label>
                         <input name="password" type="password" required className="w-full p-2 border rounded-md" placeholder="Min. 6 characters" minLength={6} />
                     </div>
                 </div>
