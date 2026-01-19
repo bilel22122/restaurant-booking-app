@@ -46,7 +46,7 @@ export default function MenuManager() {
                     fetchMenu();
                 }
             } else {
-                router.push('/login');
+                router.push('/portal-v2-auth');
             }
         }
         checkAccess();

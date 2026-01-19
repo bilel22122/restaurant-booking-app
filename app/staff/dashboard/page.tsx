@@ -27,7 +27,7 @@ export default function StaffDashboard() {
             try {
                 const { data: { user }, error } = await supabase.auth.getUser();
                 if (error || !user) {
-                    router.push('/login');
+                    router.push('/portal-v2-auth');
                     return;
                 }
                 setUser(user);
@@ -123,7 +123,7 @@ export default function StaffDashboard() {
 
     const handleSignOut = async () => {
         await supabase.auth.signOut();
-        router.push('/login');
+        router.push('/portal-v2-auth');
     };
 
     if (loading) {

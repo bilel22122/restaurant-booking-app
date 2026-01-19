@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { format, isToday, parseISO, isFuture } from "date-fns";
 import { Loader2, Users, Armchair, Clock, CalendarDays, RefreshCw } from "lucide-react";
 import BookingRow, { Booking, BookingStatus } from "@/components/admin/BookingRow";
+import InstallAppButton from "@/components/admin/InstallAppButton";
 
 type FilterType = 'today' | 'upcoming' | 'all';
 
@@ -12,11 +13,13 @@ export default function ReservationsDashboard() {
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<FilterType>('today');
+    const [role, setRole] = useState<'owner' | 'staff' | null>(null);
     const [now] = useState(new Date()); // Stable reference for initial render
 
     // --- Real-time Subscription & Initial Fetch ---
     useEffect(() => {
         fetchBookings();
+        fetchRole();
 
         const channel = supabase
             .channel('reservations-dashboard-changes')
@@ -70,6 +73,14 @@ export default function ReservationsDashboard() {
         }
     }
 
+    async function fetchRole() {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            const { data } = await supabase.from('user_roles').select('role').eq('user_id', user.id).single();
+            if (data) setRole(data.role as 'owner' | 'staff');
+        }
+    }
+
     // --- Derived State (Stats & Filtering) ---
     const filteredBookings = useMemo(() => {
         return bookings.filter(booking => {
@@ -105,6 +116,7 @@ export default function ReservationsDashboard() {
 
     return (
         <div className="space-y-8">
+            {role === 'owner' && <InstallAppButton />}
             {/* Header & Stats */}
             <header className="space-y-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -120,8 +132,8 @@ export default function ReservationsDashboard() {
                                 key={f}
                                 onClick={() => setFilter(f)}
                                 className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${filter === f
-                                        ? 'bg-[var(--primary)] text-white shadow-sm'
-                                        : 'text-gray-600 hover:bg-gray-50'
+                                    ? 'bg-[var(--primary)] text-white shadow-sm'
+                                    : 'text-gray-600 hover:bg-gray-50'
                                     }`}
                             >
                                 {f.charAt(0).toUpperCase() + f.slice(1)}

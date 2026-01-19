@@ -22,7 +22,7 @@ export default async function StaffPage() {
     const { data: { user } } = await supabaseUserClient.auth.getUser();
 
     if (!user) {
-        redirect('/login');
+        redirect('/portal-v2-auth');
     }
 
     // 2. Check Role

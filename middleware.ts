@@ -5,8 +5,8 @@ export async function middleware(request: NextRequest) {
     // Update session for Supabase to handle cookies
     const response = await updateSession(request)
 
-    // Protected Admin Routes
-    if (request.nextUrl.pathname.startsWith('/admin')) {
+    // Protected Admin and Staff Routes
+    if (request.nextUrl.pathname.startsWith('/admin') || request.nextUrl.pathname.startsWith('/staff')) {
         const { createServerClient } = await import('@supabase/ssr')
 
         // Create a client to check session existence
@@ -32,8 +32,13 @@ export async function middleware(request: NextRequest) {
         } = await supabase.auth.getUser()
 
         if (!user) {
-            return Response.redirect(new URL('/login', request.url))
+            return Response.redirect(new URL('/', request.url))
         }
+    }
+
+    // Redirect /login to Home for stealth mode
+    if (request.nextUrl.pathname === '/login') {
+        return Response.redirect(new URL('/', request.url))
     }
 
     return response

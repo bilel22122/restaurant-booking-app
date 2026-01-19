@@ -34,7 +34,7 @@ export default function AdminReviewsPage() {
                     fetchReviews();
                 }
             } else {
-                router.push('/login');
+                router.push('/portal-v2-auth');
             }
         }
         checkAccess();
