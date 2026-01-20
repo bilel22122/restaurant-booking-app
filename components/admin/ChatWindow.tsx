@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Send, User as UserIcon } from "lucide-react";
+import { Send, User as UserIcon, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -23,6 +23,7 @@ interface ChatWindowProps {
     currentUserId: string;
     selectedUser: ChatUser | null;
     onSendMessage: (content: string) => void;
+    onBack: () => void;
 }
 
 export default function ChatWindow({
@@ -30,6 +31,7 @@ export default function ChatWindow({
     currentUserId,
     selectedUser,
     onSendMessage,
+    onBack,
 }: ChatWindowProps) {
     const [inputText, setInputText] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -57,7 +59,7 @@ export default function ChatWindow({
 
     if (!selectedUser) {
         return (
-            <div className="flex-1 flex items-center justify-center bg-gray-50 h-[calc(100vh-4rem)]">
+            <div className="flex-1 flex items-center justify-center bg-gray-50 h-[calc(100dvh-4rem)]">
                 <div className="text-center text-gray-400">
                     <p className="text-lg">Select a colleague to start chatting.</p>
                 </div>
@@ -66,20 +68,26 @@ export default function ChatWindow({
     }
 
     return (
-        <div className="flex-1 flex flex-col h-[calc(100vh-theme(spacing.20))] md:h-[calc(100vh-4rem)] bg-gray-50">
+        <div className="flex-1 flex flex-col h-[calc(100dvh-theme(spacing.20))] md:h-[calc(100vh-4rem)] bg-gray-50">
             {/* Header */}
-            <div className="bg-white px-6 py-4 border-b border-gray-200 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+            <div className="bg-white px-4 py-3 border-b border-gray-200 flex items-center gap-3 shadow-sm z-10">
+                <button
+                    onClick={onBack}
+                    className="md:hidden p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-full"
+                >
+                    <ArrowLeft size={20} />
+                </button>
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
                     <UserIcon size={20} />
                 </div>
                 <div>
-                    <h2 className="font-semibold text-gray-800">{selectedUser.full_name}</h2>
-                    <p className="text-xs text-gray-500 capitalize">{selectedUser.role}</p>
+                    <h2 className="font-semibold text-gray-800 leading-tight">{selectedUser.full_name}</h2>
+                    <p className="text-xs text-gray-500 capitalize leading-tight">{selectedUser.role}</p>
                 </div>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.map((msg) => {
                     const isMe = msg.sender_id === currentUserId;
                     return (
@@ -92,13 +100,13 @@ export default function ChatWindow({
                         >
                             <div
                                 className={cn(
-                                    "max-w-[70%] px-4 py-2 rounded-2xl text-sm shadow-sm",
+                                    "max-w-[75%] px-4 py-2 rounded-2xl text-sm shadow-sm",
                                     isMe
                                         ? "bg-blue-600 text-white rounded-br-none"
                                         : "bg-white text-gray-800 border border-gray-200 rounded-bl-none"
                                 )}
                             >
-                                <p>{msg.content}</p>
+                                <p className="leading-relaxed">{msg.content}</p>
                                 <span className={cn(
                                     "text-[10px] block mt-1 opacity-70",
                                     isMe ? "text-blue-100 text-right" : "text-gray-400"
@@ -109,15 +117,17 @@ export default function ChatWindow({
                         </div>
                     );
                 })}
+                {/* Spacer for bottom input visibility */}
+                <div className="h-2" />
                 <div ref={messagesEndRef} />
             </div>
 
             {/* Input */}
-            <div className="p-4 bg-white border-t border-gray-200">
+            <div className="p-3 md:p-4 bg-white border-t border-gray-200">
                 <div className="flex items-center gap-2 max-w-4xl mx-auto">
                     <input
                         type="text"
-                        className="flex-1 px-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                        className="flex-1 px-4 py-3 md:py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-base"
                         placeholder="Type a message..."
                         value={inputText}
                         onChange={(e) => setInputText(e.target.value)}
@@ -126,7 +136,7 @@ export default function ChatWindow({
                     <button
                         onClick={handleSend}
                         disabled={!inputText.trim()}
-                        className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="p-3 md:p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
                     >
                         <Send size={20} className="ml-0.5" />
                     </button>

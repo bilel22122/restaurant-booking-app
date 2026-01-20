@@ -204,19 +204,24 @@ export default function ChatPage() {
 
     return (
         <div className="flex flex-col md:flex-row h-full rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-white">
-            <ChatSidebar
-                users={users}
-                selectedUserId={selectedUserId}
-                unreadCounts={unreadCounts}
-                onSelectUser={setSelectedUserId}
-                currentUserId={currentUser || ""}
-            />
-            <ChatWindow
-                messages={messages}
-                currentUserId={currentUser || ""}
-                selectedUser={selectedUser}
-                onSendMessage={handleSendMessage}
-            />
+            <div className={`w-full md:w-1/3 border-r border-gray-200 h-full ${selectedUserId ? 'hidden md:block' : 'block'}`}>
+                <ChatSidebar
+                    users={users}
+                    selectedUserId={selectedUserId}
+                    unreadCounts={unreadCounts}
+                    onSelectUser={setSelectedUserId}
+                    currentUserId={currentUser || ""}
+                />
+            </div>
+            <div className={`w-full md:w-2/3 h-full ${selectedUserId ? 'block' : 'hidden md:block'}`}>
+                <ChatWindow
+                    messages={messages}
+                    currentUserId={currentUser || ""}
+                    selectedUser={selectedUser}
+                    onSendMessage={handleSendMessage}
+                    onBack={() => setSelectedUserId(null)}
+                />
+            </div>
         </div>
     );
 }
