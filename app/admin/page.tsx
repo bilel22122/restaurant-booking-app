@@ -121,8 +121,8 @@ export default function ReservationsDashboard() {
             <header className="space-y-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-[var(--foreground)] tracking-tight">Reservations</h1>
-                        <p className="text-gray-500 mt-1">Manage daily bookings and traffic flow.</p>
+                        <h1 className="text-2xl md:text-3xl font-bold text-[var(--foreground)] tracking-tight">Reservations</h1>
+                        <p className="text-sm md:text-base text-gray-500 mt-1">Manage daily bookings and traffic flow.</p>
                     </div>
 
                     {/* Filter Controls */}
@@ -143,14 +143,14 @@ export default function ReservationsDashboard() {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
                         <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
                             <CalendarDays size={24} />
                         </div>
                         <div>
                             <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Bookings</p>
-                            <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                            <p className="text-xl md:text-2xl font-bold text-gray-900">{stats.total}</p>
                         </div>
                     </div>
 
@@ -160,7 +160,7 @@ export default function ReservationsDashboard() {
                         </div>
                         <div>
                             <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Guests Seated</p>
-                            <p className="text-2xl font-bold text-gray-900">{stats.seated}</p>
+                            <p className="text-xl md:text-2xl font-bold text-gray-900">{stats.seated}</p>
                         </div>
                     </div>
 
@@ -170,7 +170,7 @@ export default function ReservationsDashboard() {
                         </div>
                         <div>
                             <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Pending</p>
-                            <p className="text-2xl font-bold text-gray-900">{stats.pending}</p>
+                            <p className="text-xl md:text-2xl font-bold text-gray-900">{stats.pending}</p>
                         </div>
                     </div>
                 </div>
