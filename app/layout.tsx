@@ -18,6 +18,21 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: restaurantConfig.name,
   description: restaurantConfig.content.heroSubtitle,
+  // ---------------------------------------------------------
+  // 👇 PWA CONFIGURATION ADDED HERE
+  // ---------------------------------------------------------
+  manifest: "/manifest.json", // <--- This links the browser to your public/manifest.json file
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: restaurantConfig.name,
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+  },
+  // ---------------------------------------------------------
 };
 
 export default function RootLayout({
