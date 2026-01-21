@@ -9,6 +9,7 @@ import { restaurantConfig } from "@/restaurant.config";
 
 import { cn } from "@/lib/utils";
 import { useLanguage } from "./LanguageProvider";
+import { createBooking } from "@/app/actions/createBooking";
 
 type BookingStatus = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -64,26 +65,24 @@ export default function BookingFlow() {
     const handleSubmit = async () => {
         setBookingStatus('submitting');
 
-        // Insert into Supabase
-        const { error } = await supabase.from('bookings').insert({
-            customer_name: name,
-            phone_number: phone,
-            booking_date: date,
-            booking_time: time,
-            party_size: people,
-            status: 'pending', // default
-            notes: notes
-        });
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("phone", phone);
+        formData.append("date", date);
+        formData.append("time", time);
+        formData.append("guests", people.toString());
+        formData.append("notes", notes);
 
-        if (error) {
-            console.error("Booking error:", error);
-            // For demo purposes, we might want to succeed even if DB fails if creds aren't there yet
-            // strictly speaking we should show error, but let's show success for the UI walkthrough unless it's a critical logic failure
+        // Call Server Action
+        const result = await createBooking({} as any, formData);
+
+        if (result.error) {
+            console.error("Booking error:", result.error);
+            setBookingStatus('error');
+        } else {
+            setBookingStatus('success');
+            setStep(3);
         }
-
-        // Always go to success for this demo unless explicitly broken
-        setBookingStatus('success');
-        setStep(3);
     };
 
     const getWhatsAppLink = () => {
