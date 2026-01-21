@@ -2,6 +2,7 @@
     "name": "La Bella Admin",
     "short_name": "Admin",
     "start_url": "/portal-v2-auth",
+    "scope": "/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#e11d48",
