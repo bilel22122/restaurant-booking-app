@@ -3,12 +3,21 @@
 import { useState, useEffect } from "react";
 import { Download, Share, Plus, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation"; // <--- 1. Import the URL hook
 
 export default function PWAInstallPrompt() {
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const [isIOS, setIsIOS] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
     const [showIOSModal, setShowIOSModal] = useState(false);
+    
+    const pathname = usePathname(); // <--- 2. Get the current page URL
+
+    // 3. Define your "Admin Only" zones
+    // The button will ONLY show if the URL contains one of these words
+    const isAdminPage = pathname?.includes("/portal-v2-auth") || 
+                        pathname?.includes("/dashboard") || 
+                        pathname?.includes("/admin");
 
     useEffect(() => {
         // Check if running in standalone mode
@@ -52,12 +61,17 @@ export default function PWAInstallPrompt() {
         }
     };
 
-    if (isStandalone) return null; // Don't show if already installed
-    if (!deferredPrompt && !isIOS) return null; // Don't show if not installable and not iOS (unless we want to show it always for iOS?)
-    // Actually, for iOS we only show if it IS iOS. For Android/Desktop we wait for the event.
+    // ---------------------------------------------------------
+    // 👇 SECURITY CHECK: HIDE IF NOT ADMIN PAGE
+    // ---------------------------------------------------------
+    if (!isAdminPage) return null; 
+    // ---------------------------------------------------------
 
-    // Render nothing if neither condition is met
-    if (!deferredPrompt && !(isIOS && !isStandalone)) return null;
+    if (isStandalone) return null; // Don't show if already installed
+    
+    // Logic: If iOS, show it (because iOS doesn't fire an event). 
+    // If Android, wait for the event.
+    if (!deferredPrompt && !isIOS) return null; 
 
     return (
         <>
