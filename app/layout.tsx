@@ -1,3 +1,4 @@
+import OneSignalInit from "@/components/OneSignalInit"; // ✅ Import is here
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { restaurantConfig } from "@/restaurant.config";
@@ -16,27 +17,21 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// ---------------------------------------------------------
-// 👇 FIX 1: Viewport must be exported SEPARATELY
-// ---------------------------------------------------------
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false, // Prevents accidental zooming on buttons
-  themeColor: "#e11d48", // Makes the status bar red to match your app
+  userScalable: false,
+  themeColor: "#e11d48",
 };
 
 export const metadata: Metadata = {
   title: restaurantConfig.name,
   description: restaurantConfig.content.heroSubtitle,
-  // ---------------------------------------------------------
-  // 👇 PWA CONFIGURATION
-  // ---------------------------------------------------------
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent", // Makes the app look more "native" on iPhone
+    statusBarStyle: "black-translucent",
     title: restaurantConfig.name,
   },
   other: {
@@ -67,8 +62,12 @@ export default function RootLayout({
         <LanguageProvider>
           <Navbar />
           {children}
-          {/* 👇 This is perfect, keep it here */}
+          
           <PWAInstallPrompt />
+          
+          {/* 👇 THIS WAS MISSING! I ADDED IT HERE: */}
+          <OneSignalInit />
+          
         </LanguageProvider>
       </body>
     </html>
